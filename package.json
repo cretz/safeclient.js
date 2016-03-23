@@ -7,7 +7,8 @@
   "license": "MIT",
   "scripts": {
     "postinstall": "./node_modules/.bin/typings install",
-    "compile": "./node_modules/.bin/tsc"
+    "compile": "./node_modules/.bin/tsc",
+    "compile-and-watch": "./node_modules/.bin/tsc --watch"
   },
   "devDependencies": {
     "typescript": "^1.8.7",

@@ -9,8 +9,7 @@
     "declaration": true,
     "suppressImplicitAnyIndexErrors": true,
     "outDir": "lib",
-    "rootDir": "src",
-    "watch": true
+    "rootDir": "src"
   },
   "exclude": [
       "examples",
