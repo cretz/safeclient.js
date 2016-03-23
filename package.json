@@ -1,0 +1,20 @@
+{
+  "name": "safeclient",
+  "version": "0.1.0",
+  "description": "SAFE network JS client",
+  "main": "lib/index.js",
+  "author": "Chad Retz <chad.retz@gmail.com>",
+  "license": "MIT",
+  "scripts": {
+    "postinstall": "./node_modules/.bin/typings install",
+    "compile": "./node_modules/.bin/tsc"
+  },
+  "devDependencies": {
+    "typescript": "^1.8.7",
+    "typings": "^0.7.8"
+  },
+  "dependencies": {
+    "libsodium-wrappers": "^0.2.12",
+    "superagent": "^1.8.2"
+  }
+}
