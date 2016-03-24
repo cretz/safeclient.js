@@ -1,6 +1,6 @@
 'use strict';
 
-const safe = require('../../lib/index')
+const safe = require('../../lib/src/index')
 
 const client = new safe.Client()
 // client.logger = console.log

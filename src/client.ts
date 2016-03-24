@@ -12,12 +12,31 @@ export interface Conf {
   nonce?: Uint8Array
 }
 
+export function marshalConf(conf: Conf): string {
+  return JSON.stringify({
+    launcherBaseUrl: conf.launcherBaseUrl,
+    token: conf.token,
+    sharedKey: conf.sharedKey == null ? conf.sharedKey : sodium.to_base64(conf.sharedKey),
+    nonce: conf.nonce == null ? conf.nonce : sodium.to_base64(conf.nonce)
+  })
+}
+
+export function unmarshalConf(str: string): Conf {
+  const conf = JSON.parse(str)
+  return {
+    launcherBaseUrl: conf.launcherBaseUrl,
+    token: conf.token,
+    sharedKey: conf.sharedKey == null ? conf.sharedKey : sodium.from_base64(conf.sharedKey),
+    nonce: conf.nonce == null ? conf.nonce : sodium.from_base64(conf.nonce)
+  }
+}
+
 export interface Request {
   path: string
   method: string
   jsonBody?: any
   rawBody?: string
-  query?: { [name: string]: string }
+  query?: Object
   doNotEncrypt?: boolean
   jsonResponse?: boolean
   doNotAuth?: boolean
@@ -58,8 +77,8 @@ export class Client {
   constructor(conf?: Conf) {
     if (conf == null) this.conf = { launcherBaseUrl: 'http://localhost:8100/' }
     else this.conf = conf
-    this.requestBuilder = (client, req) => new Promise((resolve) => resolve(client.buildRequest(req)))
-    this.responseHandler = (client, resp, decrypt, jsonResponse) => new Promise((resolve) => {
+    this.requestBuilder = (client, req) => new Promise(resolve => resolve(client.buildRequest(req)))
+    this.responseHandler = (client, resp, decrypt, jsonResponse) => new Promise(resolve => {
       resolve(client.handleResponse(resp, decrypt, jsonResponse))
     })
   }
@@ -68,8 +87,11 @@ export class Client {
     return this.requestBuilder(this, req).then(httpReq => {
       return new Promise<request.Response>((resolve, reject) => {
         httpReq.end((err, res) => {
-          if (err != null) reject(err)
-          else resolve(res)
+          if (err != null) {
+            // We'll handle HTTP errors ourselves
+            if (err.response != null) resolve(err.response)
+            else reject(err)
+          } else resolve(res)
         })
       })
     }).then(resp => {

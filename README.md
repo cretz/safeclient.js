@@ -6,6 +6,7 @@ This is a work in progress...
     cd safeclient.js
     npm install
     npm run compile
+    npm run integration-test
     node ./examples/js/simple_read_write.js
 
 ## License

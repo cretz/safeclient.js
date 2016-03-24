@@ -24,8 +24,8 @@ declare module 'libsodium-wrappers' {
     privateKey: T
   }
   
-  function crypto_box_keypair<T>(outputFormat?: 'uint8array'): KeyPair<Uint8Array>
-  function crypto_box_keypair<T>(outputFormat: 'base64'): KeyPair<string>
+  function crypto_box_keypair(outputFormat?: 'uint8array'): KeyPair<Uint8Array>
+  function crypto_box_keypair(outputFormat: 'base64'): KeyPair<string>
   function crypto_box_keypair<T>(outputFormat: OutputFormat): KeyPair<T>
   
   function randombytes_buf(length: number, outputFormat?: 'uint8array'): Uint8Array

@@ -53,7 +53,7 @@ export function auth(cl: client.Client, info: AuthInfo, privateKey?: string): Pr
       jsonResponse: true
     }
     resolve(cl.do(req))
-  }).then((resp) => {
+  }).then(resp => {
     const result = <AuthResponse>resp.body
     // I acknowledge this may be base64 decoding something that was just encoded above but
     // the code clarity outweighs the cost of extra decoding IMO
@@ -83,12 +83,12 @@ export function isValidToken(cl: client.Client): Promise<boolean> {
   }).then(_ => { return true }).catch(err => {
     // 401 is simply a false, not an error
     if (err instanceof client.ApiError && (<client.ApiError>err).resp.status == 401) return Promise.resolve(false)
-    else Promise.reject(err)
+    else return Promise.reject(err)
   })
 }
 
 // Automatically sets client.conf.token, client.conf.sharedKey, and client.conf.nonce
-export function ensureAuthed(cl: client.Client, info: AuthInfo): Promise<void> {
+export function ensureAuthed(cl: client.Client, info: AuthInfo): Promise<any> {
   return isValidToken(cl).then(valid => {
     if (valid) return
     // Clear out the existing conf values and auth
