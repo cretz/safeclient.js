@@ -72,13 +72,10 @@ export module nfs {
   export interface ChangeDirInfo {
     dirPath: string
     isPathShared?: boolean
-    newInfo: { name?: string, metadata?: string }
+    newInfo: { name: string, metadata?: string } | { name?: string, metadata: string }
   }
   
   export function changeDir(cl: client.Client, info: ChangeDirInfo): Promise<any> {
-    if (info.newInfo == null || (info.newInfo.name == null && info.newInfo.metadata == null)) {
-      return Promise.reject('New name or metadata must be provided')
-    }
     const shared = info.isPathShared || false
     return cl.do({
       path: `/nfs/directory/${encodeURIComponent(info.dirPath)}/${shared}`,
@@ -155,7 +152,7 @@ export module nfs {
   export function changeFile(cl: client.Client, info: ChangeFileInfo): Promise<any> {
     const shared = info.isPathShared || false
     return cl.do({
-      path: `/nfs/file/${encodeURIComponent(info.filePath)}/${shared}`,
+      path: `/nfs/file/metadata/${encodeURIComponent(info.filePath)}/${shared}`,
       method: 'PUT',
       jsonBody: info.newInfo
     })

@@ -54,6 +54,7 @@ export type Logger = (message?: any, ...optionalParams: any[]) => void
 const doNotDecryptResponses = {
   200: 'OK',
   202: 'Accepted',
+  401: 'Unauthorized',
   500: 'Server Error'
 }
 
@@ -105,7 +106,7 @@ export class Client {
     // We might have to encrypt the query values
     if (req.query != null) {
       if (req.doNotEncrypt) fullUrl.query = req.query
-      else fullUrl.search = this.encryptAndBase64(querystring.stringify(req.query))
+      else fullUrl.search = encodeURIComponent(this.encryptAndBase64(querystring.stringify(req.query)))
     }
     
     const httpReq = request(req.method, url.format(fullUrl))

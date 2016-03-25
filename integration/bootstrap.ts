@@ -2,10 +2,6 @@
 
 import * as safe from '../src/index'
 import * as fs from 'fs'
-// import * as chai from 'chai'
-// import * as chaiAsPromised from 'chai-as-promised'
-
-// chai.use(chaiAsPromised)
 
 export const client: safe.Client = new safe.Client()
 
