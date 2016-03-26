@@ -127,6 +127,9 @@ export class Client {
       }
     }
     
+    // TODO: stream
+    httpReq.buffer(true)
+    
     // Auth if necessary
     if (this.conf.token != null && !req.doNotAuth) httpReq.set('authorization', 'Bearer ' + this.conf.token)
     

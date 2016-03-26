@@ -8,7 +8,10 @@ export const client: safe.Client = new safe.Client()
 before(function() {
   // We'll give the human 2 minutes to approve if it's not there
   this.timeout(1000 * 60 * 2)
+  
+  // Uncomment this to get debug info
   // client.logger = console.log
+  
   // Load conf from file if we can
   try {
     client.conf = safe.unmarshalConf(fs.readFileSync('integration.conf.json', 'utf8'))

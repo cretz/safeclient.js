@@ -9,50 +9,55 @@ describe('safeclient.js', function() {
   // We'll give the whole set of tests 10 minutes as an arbitrarily high barrier
   this.timeout(1000 * 60 * 10)
   const scenarios = [
-    { shared: false, private: false }
+    { shared: false, private: false },
+    { shared: true, private: false },
+    { shared: false, private: true },
+    { shared: true, private: true }
   ]
   
   scenarios.forEach(scenario => {
     const desc = 'NFS ' + (scenario.shared ? 'shared' : 'not shared') +
       ' and ' + (scenario.private ? 'private' : 'public')
     describe(desc, () => {
-      // Create top-level dir and tear down at the end
+      // Create top-level dir and tear down at the end (ignoring error)
       const topLevelName = Utils.randomName()
       const topLevelPath = '/' + topLevelName
-      before(() => {
-        return safe.nfs.createDir(client, {
-          dirPath: topLevelPath,
-          isPrivate: scenario.private,
-          // TODO: https://maidsafe.atlassian.net/browse/CS-57 (we're ignoring all metadata for now)
-          metadata: '',
-          isPathShared: scenario.shared
-        })
-      })
-      after(() => {
-        return safe.nfs.deleteDir(client, {
-          dirPath: topLevelPath,
-          isPathShared: scenario.shared
-        })
-      })
+      before(() => safe.nfs.createDir(client, {
+        dirPath: topLevelPath,
+        isPrivate: scenario.private,
+        // TODO: https://maidsafe.atlassian.net/browse/CS-57 (we're ignoring all metadata for now)
+        metadata: '',
+        isPathShared: scenario.shared
+      }))
+      after(() => safe.nfs.deleteDir(client, {
+        dirPath: topLevelPath,
+        isPathShared: scenario.shared
+      }).catch(_ => {}))
       
       it('correctly handles directory operations', () => {
+        let p: Promise<any> = Promise.resolve()
+        
         // Make sure our top level dir is there
-        let p: Promise<any> = safe.nfs.getDir(client, { dirPath: '/', isPathShared: scenario.shared }).then(resp => {
-          const foundDir = resp.subDirectories.find(dir => dir.name == topLevelName)
-          assert.isNotNull(foundDir)
-          assert.equal(foundDir.isPrivate, scenario.private)
-          assert.equal(foundDir.metadata, '')
-          assert.equal(foundDir.createdOn, foundDir.modifiedOn)
-          // Is in the past 20 seconds?
-          assert.isBelow(foundDir.createdOn, Date.now())
-          assert.isAbove(foundDir.createdOn, Date.now() - (20 * 1000))
+        p = p.then(_ => {
+          return safe.nfs.getDir(client, { dirPath: '/', isPathShared: scenario.shared }).then(resp => {
+            const foundDir = resp.subDirectories.find(dir => dir.name == topLevelName)
+            assert.isNotNull(foundDir)
+            assert.equal(foundDir.isPrivate, scenario.private)
+            assert.equal(foundDir.metadata, '')
+            assert.equal(foundDir.createdOn, foundDir.modifiedOn)
+            // Is in the past 20 seconds?
+            assert.isBelow(foundDir.createdOn, Date.now())
+            assert.isAbove(foundDir.createdOn, Date.now() - (20 * 1000))
+          })
         })
         
         // Grab just this directory and make sure it has no files and it's right
-        p = p.then(_ => safe.nfs.getDir(client, { dirPath: topLevelPath, isPathShared: scenario.shared })).then(resp => {
-          assert.lengthOf(resp.files, 0)
-          assert.lengthOf(resp.subDirectories, 0)
-          assert.equal(resp.info.name, topLevelName)
+        p = p.then(_ => {
+          return safe.nfs.getDir(client, { dirPath: topLevelPath, isPathShared: scenario.shared }).then(resp => {
+            assert.lengthOf(resp.files, 0)
+            assert.lengthOf(resp.subDirectories, 0)
+            assert.equal(resp.info.name, topLevelName)
+          })
         })
         
         // Add a child directory, and make sure it looks right

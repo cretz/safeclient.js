@@ -45,10 +45,12 @@ export module dns {
   }
   
   export function getFile(cl: client.Client, info: FileInfo): Promise<File> {
+    const query: any = { offset: info.offset || 0 }
+    if (info.length) query.length = info.length
     return cl.do({
       path: `/dns/${encodeURIComponent(info.service)}/${encodeURIComponent(info.longName)}/${encodeURIComponent(info.filePath)}`,
       method: 'GET',
-      query: { offset: info.offset, length: info.length },
+      query,
       doNotEncrypt: true,
       doNotAuth: true
     }).then(resp => {

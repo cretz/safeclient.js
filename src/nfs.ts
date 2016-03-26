@@ -184,10 +184,12 @@ export module nfs {
   
   export function getFile(cl: client.Client, info: GetFileInfo): Promise<Buffer> {
     const shared = info.isPathShared || false
+    const query: any = { offset: info.offset || 0 }
+    if (info.length) query.length = info.length
     return cl.do({
       path: `/nfs/file/${encodeURIComponent(info.filePath)}/${shared}`,
       method: 'GET',
-      query: { offset: info.offset, length: info.length }
+      query
     }).then(resp => new Buffer(resp.text))
   }
 }
