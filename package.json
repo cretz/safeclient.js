@@ -10,7 +10,6 @@
     "url": "https://github.com/cretz/safeclient.js.git"
   },
   "scripts": {
-    "postinstall": "./node_modules/.bin/typings install",
     "compile": "./node_modules/.bin/tsc",
     "compile-and-watch": "./node_modules/.bin/tsc --watch",
     "integration-test": "./node_modules/.bin/mocha ./lib/integration"

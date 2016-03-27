@@ -11,7 +11,13 @@ dependencies of this project ([libsodium.js](https://github.com/jedisct1/libsodi
 
 ## Installation
 
-This is not yet published to NPM, so it has to be built manually.
+Install with NPM:
+
+    npm install safeclient --save
+
+Require in your code:
+
+    const safe = require('safeclient')
 
 ## Building
 
@@ -20,6 +26,7 @@ This project is built in TypeScript and has to be compiled before it can be used
     git clone https://github.com/cretz/safeclient.js.git
     cd safeclient.js
     npm install
+    ./node_modules/.bin/typings install
     npm run compile
 
 This will place the JS library entrypoint at `./lib/src/index.js`. The example can be
