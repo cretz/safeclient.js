@@ -5,6 +5,10 @@
   "main": "lib/src/index.js",
   "author": "Chad Retz <chad.retz@gmail.com>",
   "license": "MIT",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/cretz/safeclient.js.git"
+  },
   "scripts": {
     "postinstall": "./node_modules/.bin/typings install",
     "compile": "./node_modules/.bin/tsc",
